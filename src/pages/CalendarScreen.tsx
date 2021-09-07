@@ -107,9 +107,8 @@ export function CalendarScreen() {
                         <TableCell key={cell.date} align="center">
                         <div className={classes.dayOfMonth}>{cell.date}</div>
                         {cell.events.map((event, index) => (
-                             <div className="btn btn-sm btn-info" key={index}>
-                                {format(new Date(event.startEvent), "p", 
-                                {locale: ptBR})} - {format(new Date(event.endEvent), "p",  {locale: ptBR})}
+                             <div className="btn btn-sm btn-info" key={index} data-toggle="tooltip" data-placement="top" title={event.description}>
+                                {event.start}  {event.end}
                             </div>
                         ))}
                         </TableCell>

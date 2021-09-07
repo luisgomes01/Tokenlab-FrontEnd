@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import * as Api from '../api/Event'
-import {format} from 'date-fns'
+import * as Api from '../api/Event';
+import {format} from 'date-fns';
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -20,20 +21,22 @@ const useStyles = makeStyles((theme: Theme) =>
 const NewEventForm: React.FC = () => {
   const classes = useStyles();
   const [description, setDescription] = useState("")
-  const [startDate, setStartDate] = useState<Date>(new Date())
-  const [endDate, setEndDate] = useState<Date>(startDate)
+  const [date, setDate] = useState("")
+  const [start, setStart] = useState("")
+  const [end, setEnd] = useState("")
 
   const onSubmitForm = async () => {
 
     try {
       const user_id = localStorage.getItem("user_id")
-      if (startDate && endDate && user_id) {
-        const startEvent = startDate.toISOString();
-        const endEvent = endDate.toISOString();
+      if (start && end && user_id) {
+        const startEvent = start;
+        const endEvent = end;
         const response = await Api.createEvent({
           description, 
-          startEvent, 
-          endEvent,
+          start, 
+          end,
+          date,
           user_id: Number(user_id)
         })
         setDescription("")
@@ -66,23 +69,26 @@ const NewEventForm: React.FC = () => {
                 </div>
                 <div className="form-group">
                     <TextField
-                      id="time"
                       label="Data"
                       type="date"
-                      defaultValue={startDate}
-                      value={format(startDate, "yyyy-MM-dd")}
+                      defaultValue={format(new Date(Date.now()), "yyyy-MM-dd")}
+                      value={date}
                       className={classes.textField}
                       InputLabelProps={{
                         shrink: true,
                       }}
-                      onChange={(e)=> setStartDate(new Date(e.target.value))}
+                      onChange={(e)=> {
+                        const newDate = new Date(e.target.value)
+                        newDate.setTime(newDate.getTime() + newDate.getTimezoneOffset()*60*1000)
+                        setDate(format(newDate, "yyyy-MM-dd"))
+                      }}
                       required
                     />
                     <TextField
                       id="time"
                       label="Horário de Início"
                       type="time"
-                      value={format(startDate, "HH:mm")}
+                      value={start}
                       className={classes.textField}
                       InputLabelProps={{
                         shrink: true,
@@ -90,14 +96,14 @@ const NewEventForm: React.FC = () => {
                       inputProps={{
                         step: 900, // 5 min
                       }}
-                      onChange={(e)=>setStartDate(new Date(e.target.value))}
+                      onChange={(e)=> setStart(e.target.value)}
                       required
                     />
                     <TextField
                       id="time"
                       label="Horário de Fim"
                       type="time"
-                      value={format(endDate, "HH:mm")}
+                      value={end}
                       className={classes.textField}
                       InputLabelProps={{
                         shrink: true,
@@ -105,7 +111,7 @@ const NewEventForm: React.FC = () => {
                       inputProps={{
                         step: 900, // 5 min
                       }}
-                      onChange={(e)=>setEndDate(new Date(e.target.value))}
+                      onChange={(e)=> setEnd(e.target.value)}
                       required
                     />
                     </div>

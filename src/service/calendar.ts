@@ -21,7 +21,7 @@ export function getToday() {
 
 export function generateCalendar(date: string, allEvents: EventAgenda[]): ICalendarCell[][] {
   const weeks: ICalendarCell[][] = [];
-  const jsDate = new Date(date +"T12:00:00");
+  const jsDate = new Date(date);
   const currentMonth = jsDate.getMonth();
 
   const currentDay = new Date(jsDate.valueOf());
@@ -33,7 +33,15 @@ export function generateCalendar(date: string, allEvents: EventAgenda[]): ICalen
       const week: ICalendarCell[] = [];
       for(let i = 0; i < weekDays.length; i++){
           const isoDate = format(currentDay, "d")
-          week.push({date: isoDate, events: allEvents.filter((e) => isSameDay(new Date(e.startEvent), new Date(currentDay)))});
+          const weekEvents = {
+            date: isoDate, 
+            events: allEvents.filter((e) => {
+                const eventDate = new Date(e.date);
+                eventDate.setTime(eventDate.getTime() + eventDate.getTimezoneOffset()*60*1000)
+                return isSameDay(eventDate, currentDay)
+              })
+            }
+          week.push(weekEvents);
           currentDay.setDate(currentDay.getDate() + 1);
       }
       weeks.push(week);
