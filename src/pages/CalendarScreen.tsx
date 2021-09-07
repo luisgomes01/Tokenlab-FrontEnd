@@ -8,6 +8,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 
+import CalendarCell from '../components/CalendarCell'
+
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -103,15 +105,8 @@ export function CalendarScreen() {
                 <TableBody>
                 {weeks.map((week, i) => (
                     <TableRow key={i}>
-                    {week.map((cell) => (
-                        <TableCell key={cell.date} align="center">
-                        <div className={classes.dayOfMonth}>{cell.date}</div>
-                        {cell.events.map((event, index) => (
-                             <div className="btn btn-sm btn-info" key={index} data-toggle="tooltip" data-placement="top" title={event.description}>
-                                {event.start}  {event.end}
-                            </div>
-                        ))}
-                        </TableCell>
+                    {week.map((cell, index) => (
+                        <CalendarCell cell={cell}/>
                     ))}
                     </TableRow>
                 ))}
