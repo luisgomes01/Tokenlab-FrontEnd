@@ -6,7 +6,7 @@ interface Props {
   cell: ICalendarCell
 }
 const CalendarCell: React.FC<Props> = ({cell}) => {
-  console.log("CELL", cell)
+
   return (
     <>
       <TableCell key={cell.date} align="center">

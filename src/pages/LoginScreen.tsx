@@ -11,7 +11,7 @@ export default function LoginScreen() {
         try {
             
             const response = await Api.signIn({username, password })
-            console.log(response)
+
             if (response.id) {
                 localStorage.setItem('user_id', String(response.id));
             }
