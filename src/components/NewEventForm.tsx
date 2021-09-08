@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import * as Api from '../api/Event';
 import {format} from 'date-fns';
-
+import {useCalendarContext} from '../contexts/Calendar'
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -18,20 +18,40 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const NewEventForm: React.FC = () => {
+interface Props {
+  event?: EventAgenda
+}
+function makeid(length: number) {
+  var result           = '';
+  var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var charactersLength = characters.length;
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * 
+charactersLength));
+ }
+ return result;
+}
+
+
+const NewEventForm: React.FC<Props> = ({ event }) => {
+  const uuid = makeid(10)
+  const closeButton = useRef<HTMLButtonElement>(null)
+  const {addNewEvent, editEvent} = useCalendarContext()
   const classes = useStyles();
-  const [description, setDescription] = useState("")
-  const [date, setDate] = useState("")
-  const [start, setStart] = useState("")
-  const [end, setEnd] = useState("")
+  const [description, setDescription] = useState(event?.description || "")
+  const [date, setDate] = useState(event?.date || "")
+  const [start, setStart] = useState(event?.start || "")
+  const [end, setEnd] = useState(event?.end || "")
 
-  const onSubmitForm = async () => {
-
+  const closeModal = () => {
+    if (closeButton?.current) {
+      closeButton.current.click();
+    }
+  }
+  const createNewEvent = async ()  => {
     try {
       const user_id = localStorage.getItem("user_id")
-      if (start && end && user_id) {
-        const startEvent = start;
-        const endEvent = end;
+      if (description && start && end && user_id) {
         const response = await Api.createEvent({
           description, 
           start, 
@@ -39,24 +59,58 @@ const NewEventForm: React.FC = () => {
           date,
           user_id: Number(user_id)
         })
-        setDescription("")
+        alert("Evento adicionado com sucesso!")
+        setDescription("");
+        addNewEvent(response);
+        closeModal();
       }
     } catch (e) {
       console.error(e)
       alert("Erro ao criar evento")
     }
+  }
 
+  const updateEvent = async () => {
+    try {
+      const user_id = localStorage.getItem("user_id")
+      if (description && start && end && user_id && event?.id) {
+        const id = event?.id;
+        const data = {
+          description, 
+          start, 
+          end,
+          date,
+          user_id: Number(user_id)
+        }
+        const response = await Api.updateEvent(id, data)
+        alert("Evento editado com sucesso!")
+        editEvent(response)
+        closeModal();
+        window.location.reload()
+      }
+    } catch (error) {
+      alert("Falha ao editar evento")
+    }
+  }
+  const onSubmitForm = async () => {
+    if (event?.id) {
+      updateEvent();
+      return ;
+    }
+
+    createNewEvent();
+    return;
   }
   return (
     <>
-      <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-        Novo Evento
+      <button type="button" className="btn btn-primary" data-toggle="modal" data-target={"#eventForm"+uuid}>
+        {event ? "Editar Evento": "Novo Evento"}
       </button>
-      <div className="modal fade" id="exampleModalCenter" role="dialog">
-        <div className="modal-dialog modal-dialog-centered" role="document">
+      <div className="modal fade" id={"eventForm"+uuid} role="dialog">
+        <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalCenterTitle">Adicionar Novo Evento</h5>
+              <h5 className="modal-title" id="eventFormTitle">{event? "Editar Evento" :"Adicionar Novo Evento"}</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -117,8 +171,8 @@ const NewEventForm: React.FC = () => {
                     </div>
                 </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" className="btn btn-primary" onClick={onSubmitForm}>Save changes</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal" ref={closeButton}>Fechar</button>
+                <button type="button" className="btn btn-primary" onClick={onSubmitForm}>Salvar Alterações</button>
               </div>
           </div>
         </div>

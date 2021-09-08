@@ -20,13 +20,16 @@ import { ptBR } from 'date-fns/locale'
 import LogOffButton from '../components/LogOffButton';
 import NewEventForm from '../components/NewEventForm';
 
+import {useCalendarContext} from '../contexts/Calendar';
+
+
 import * as Api from '../api/Event'
 const useStyles = makeStyles({
     table: {
       borderTop: "1px solid rgb(224, 224,224)",
       minHeight: "100%",
       "& td ~ td, & th ~ th": {
-          borderLeft: "1px solid rgb(224, 224,224)",
+          borderLeft: "1px solid rgb(224, 224,224)"
       }
     },
     dayOfMonth: {},
@@ -37,7 +40,7 @@ const useStyles = makeStyles({
 
 export function CalendarScreen() {
     const classes = useStyles();
-    const [events, setEvents] = useState<EventAgenda[]>([] as EventAgenda[]);
+    const {events, setEvents} = useCalendarContext();
     const [startingDate, setStartingDate] = useState(getToday());
 
     const weeks = useMemo(() => generateCalendar(startingDate, events), [startingDate, events]);

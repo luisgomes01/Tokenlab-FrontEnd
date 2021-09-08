@@ -15,8 +15,8 @@ const CalendarContextProvider: React.FC = ({children}) => {
     setEvents([...events, event])
   }
 
-  const removeEvent = (eventId: number) => {
-    setEvents(events.filter(event=>event.id!==eventId))
+  const removeEvent = (event: EventAgenda) => {
+    setEvents(events.filter(e=>e.id!==event.id))
   }
 
   const editEvent = (event: EventAgenda) => {

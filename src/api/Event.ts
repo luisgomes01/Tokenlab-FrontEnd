@@ -10,8 +10,8 @@ export const  createEvent =  async (data: EventAgenda) => {
   return response.data;
 }
 
-export const updateEvent = async (id: number, data: Event) => {
-  const response = await Api.post(`/events/${id}`, data);
+export const updateEvent = async (id: number, data: EventAgenda) => {
+  const response = await Api.put(`/events/${id}`, data);
   return response.data
 }
 

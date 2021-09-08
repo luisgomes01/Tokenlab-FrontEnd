@@ -13,6 +13,6 @@ interface CalendarContext {
   events: EventAgenda[];
   setEvents: (events: EventAgenda[]) => void;
   addNewEvent: (event: EventAgenda) => void;
-  removeEvent: (eventId: number) => void;
+  removeEvent: (event: EventAgenda) => void;
   editEvent: (event: EventAgenda) => void;
 }
