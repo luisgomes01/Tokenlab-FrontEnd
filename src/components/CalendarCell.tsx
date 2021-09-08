@@ -1,6 +1,5 @@
 import React from 'react';
 
-import TableCell from '@material-ui/core/TableCell';
 import {useCalendarContext} from '../contexts/Calendar';
 import NewEventForm from './NewEventForm'
 import * as Api from '../api/Event';
@@ -24,11 +23,13 @@ const CalendarCell: React.FC<Props> = ({cell}) => {
   }
   return (
     <>
-      <TableCell key={cell.date} align="center">
-        
-        <div>{cell.date}</div>
-          {cell.events.length > 0 && (<button className="btn btn-unstyled" data-toggle="modal" data-target={"#modalDetails"+cell.date} > <span className="badge badge-primary">{cell.events.length}</span> Evento{cell.events.length>1?"s":""}</button>)}
-      </TableCell>
+      <td key={cell.date}>
+        <div className="td-cell">
+          <p className="align-self-center">{cell.date}</p>
+          <span className="align-self-center">{cell.events.length > 0 && (<button className="btn btn-unstyled" data-toggle="modal" data-target={"#modalDetails"+cell.date} > <span className="badge badge-primary">{cell.events.length}</span> Evento{cell.events.length>1?"s":""}</button>)}</span>
+        </div>
+      </td>
+
       <div className="modal fade" id={"modalDetails"+cell.date} role="dialog">
         <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div className="modal-content">

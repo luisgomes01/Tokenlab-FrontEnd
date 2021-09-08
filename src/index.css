@@ -15,3 +15,21 @@ code {
 html, body, #root {
   height: 100%;
 }
+
+.tablde {
+  border-bottom: 1px solid rgb(224, 224,224) !important;
+}
+table td ~ td, table th ~ th {
+  border-left: 1px solid rgb(224, 224,224);
+}
+
+td {
+  width: 150px;
+  height: 150px;
+}
+
+.td-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

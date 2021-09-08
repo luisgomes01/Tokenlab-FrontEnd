@@ -1,12 +1,6 @@
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+
 import Box from '@material-ui/core/Box';
-import Button from '@material-ui/core/Button';
+
 
 import CalendarCell from '../components/CalendarCell'
 
@@ -24,22 +18,8 @@ import {useCalendarContext} from '../contexts/Calendar';
 
 
 import * as Api from '../api/Event'
-const useStyles = makeStyles({
-    table: {
-      borderTop: "1px solid rgb(224, 224,224)",
-      minHeight: "100%",
-      "& td ~ td, & th ~ th": {
-          borderLeft: "1px solid rgb(224, 224,224)"
-      }
-    },
-    dayOfMonth: {},
-    event: {
-
-    }
-  });
 
 export function CalendarScreen() {
-    const classes = useStyles();
     const {events, setEvents} = useCalendarContext();
     const [startingDate, setStartingDate] = useState(getToday());
 
@@ -80,42 +60,42 @@ export function CalendarScreen() {
             <h2>Agenda React</h2>
             <NewEventForm />
             </Box>
-            <TableContainer component={"div"}>
-            <Box display="flex" alignItems="center" padding="8px 16px">
-                <Box flex="1">
-                <IconButton aria-label="Mês anterior" onClick={previousMonth}>
-                    <Icon>chevron_left</Icon>
-                </IconButton>
-                <IconButton aria-label="Próximo mês" onClick={nextMonth}>
-                    <Icon>chevron_right</Icon>
-                </IconButton>
-                <Box marginLeft="16px" component="strong">
-                    {format(new Date(startingDate), "MMMM yyyy", {locale: ptBR}).toLocaleUpperCase()} 
+            <div className="container-fluid">
+                <Box display="flex" alignItems="center" padding="8px 16px">
+                    <Box flex="1">
+                    <IconButton aria-label="Mês anterior" onClick={previousMonth}>
+                        <Icon>chevron_left</Icon>
+                    </IconButton>
+                    <IconButton aria-label="Próximo mês" onClick={nextMonth}>
+                        <Icon>chevron_right</Icon>
+                    </IconButton>
+                    <Box marginLeft="16px" component="strong">
+                        {format(new Date(startingDate), "MMMM yyyy", {locale: ptBR}).toLocaleUpperCase()} 
+                    </Box>
+                    </Box>
+                    <LogOffButton/>
                 </Box>
-                </Box>
-                <LogOffButton/>
-            </Box>
-            <Table className={classes.table} size="small" aria-label="a dense table">
-                <TableHead>
-                <TableRow>
-                    {weekDays.map((day) => (
-                    <TableCell key={day} align="center">
-                        {day}
-                    </TableCell>
+                <table className="table">
+                    <thead>
+                        <tr>
+                            {weekDays.map((day) => (
+                            <th key={day} scope="col">
+                                {day}
+                            </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {weeks.map((week, i) => (
+                        <tr key={i}>
+                        {week.map((cell, index) => (
+                            <CalendarCell cell={cell}/>
+                        ))}
+                        </tr>
                     ))}
-                </TableRow>
-                </TableHead>
-                <TableBody>
-                {weeks.map((week, i) => (
-                    <TableRow key={i}>
-                    {week.map((cell, index) => (
-                        <CalendarCell cell={cell}/>
-                    ))}
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>
-            </TableContainer>
+                    </tbody>
+                </table>
+            </div>
         </Box>
     );
       
